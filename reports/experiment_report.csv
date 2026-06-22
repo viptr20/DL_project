@@ -1,0 +1,21 @@
+experiment_id,date,model,setup,epochs,batch_size,learning_rate,embedding_dim,augmentation,linear_probe_accuracy,ari,comment
+1,2026-06-22 11:42:59,ResNet-18,supervised,10,32,0.001,128,default,0.993056,0.889194,supervised e10 bs32 lr1e-3
+2,2026-06-22 11:45:04,ResNet-18,supervised,20,32,0.001,128,default,0.997222,0.915117,supervised e20 bs32 lr1e-3
+3,2026-06-22 11:46:16,ResNet-18,supervised,10,64,0.0003,128,default,0.997917,0.960244,supervised e10 bs64 lr3e-4
+4,2026-06-22 11:48:19,ResNet-18,supervised,20,64,0.0003,128,default,0.998611,0.932995,supervised e20 bs64 lr3e-4
+5,2026-06-22 11:50:47,ResNet-18 + projection head,self-supervised,10,32,0.0003,128,default,0.9875,0.642699,ssl e10 bs32 lr3e-4 emb128
+6,2026-06-22 11:54:37,ResNet-18 + projection head,self-supervised,20,32,0.0003,128,default,0.99375,0.628413,ssl e20 bs32 lr3e-4 emb128
+7,2026-06-22 11:56:56,ResNet-18 + projection head,self-supervised,10,64,0.0003,128,default,0.986111,0.633846,ssl e10 bs64 lr3e-4 emb128
+8,2026-06-22 12:00:39,ResNet-18 + projection head,self-supervised,20,64,0.0003,128,default,0.996528,0.620808,ssl e20 bs64 lr3e-4 emb128
+9,2026-06-22 12:03:09,ResNet-18 + projection head,self-supervised,10,32,0.0001,256,default,0.988889,0.616653,ssl e10 bs32 lr1e-4 emb256
+10,2026-06-22 12:07:01,ResNet-18 + projection head,self-supervised,20,32,0.0001,256,default,0.992361,0.635378,ssl e20 bs32 lr1e-4 emb256
+11,2026-06-22 12:09:16,ResNet-18 + projection head,self-supervised,10,64,0.0001,256,default,0.988889,0.640417,ssl e10 bs64 lr1e-4 emb256
+12,2026-06-22 12:12:59,ResNet-18 + projection head,self-supervised,20,64,0.0001,256,default,0.99375,0.643553,ssl e20 bs64 lr1e-4 emb256
+13,2026-06-22 12:16:00,Dual-ResNet-18,dual-agent,10,32,0.0003,128,default,0.954861,0.561205,dual e10 bs32 lr3e-4 emb128
+14,2026-06-22 12:20:26,Dual-ResNet-18,dual-agent,20,32,0.0003,128,default,0.970139,0.623143,dual e20 bs32 lr3e-4 emb128
+15,2026-06-22 12:23:21,Dual-ResNet-18,dual-agent,10,64,0.0003,128,default,0.964583,0.589847,dual e10 bs64 lr3e-4 emb128
+16,2026-06-22 12:27:29,Dual-ResNet-18,dual-agent,20,64,0.0003,128,default,0.983333,0.650934,dual e20 bs64 lr3e-4 emb128
+17,2026-06-22 12:30:15,Dual-ResNet-18,dual-agent,10,32,0.0001,256,default,0.970139,0.566419,dual e10 bs32 lr1e-4 emb256
+18,2026-06-22 12:34:27,Dual-ResNet-18,dual-agent,20,32,0.0001,256,default,0.9875,0.629611,dual e20 bs32 lr1e-4 emb256
+19,2026-06-22 12:37:13,Dual-ResNet-18,dual-agent,10,64,0.0001,256,default,0.963889,0.559101,dual e10 bs64 lr1e-4 emb256
+20,2026-06-22 12:41:14,Dual-ResNet-18,dual-agent,20,64,0.0001,256,default,0.984028,0.630106,dual e20 bs64 lr1e-4 emb256
