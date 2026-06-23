@@ -44,10 +44,10 @@ The dual-agent variant is motivated by social learning: two agents process relat
                   
 ├── experiment_report.csv     # Experiment results table
 ├── log_experiments_to_csv.py 
+├── requirements.txt
+├── training.ipynb 
 └── README.md
 ```
-
-The exact file names may vary slightly across local versions, but the project follows the common machine-learning repository pattern of separating data loading, model definitions, training, evaluation, and demo code.
 
 ## Methods
 
@@ -82,7 +82,7 @@ These two metrics complement each other: linear-probe accuracy reflects class se
 
 Based on the current experiment table, the following trends emerge:
 
-- The **learning-with-a-teacher** baseline gives the strongest overall scores, reaching nearly perfect linear-probe accuracy and the best clustering quality.
+- The **supervised learning** baseline gives the strongest overall scores, reaching nearly perfect linear-probe accuracy and the best clustering quality.
 - The **self-supervised** model performs remarkably close to the supervised baseline in linear-probe accuracy, showing that useful representations can be learned without labels.
 - The **dual-agent** model scores slightly lower on linear-probe accuracy, but in qualitative retrieval it can produce more category-oriented neighbors rather than only near-duplicates of the exact same object.
 
@@ -107,8 +107,7 @@ This demo is especially useful for comparing the qualitative behavior of the sel
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/viptr20/DL_project.git 
 ```
 
 ### 2. Create and activate a virtual environment
@@ -116,12 +115,6 @@ cd your-repo-name
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-```
-
-On Windows:
-
-```bash
-.venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
@@ -140,11 +133,19 @@ Adjust the configuration in the project files and run the appropriate training s
 python src/train.py
 ```
 
-If the repository separates training scripts by method, run the corresponding file for:
+For separates training scripts by method, run the corresponding file for:
 
 - supervised training
 - self-supervised training
 - dual-agent training
+
+For recording experiments in a report:
+
+```bash
+python log_experiments_to_csv.py
+```
+
+To train and record experiments in a report in Google Colaboratory, open and run training.ipynb
 
 ### Run evaluation
 
