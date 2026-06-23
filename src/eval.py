@@ -1,18 +1,3 @@
-"""Оценка (evaluation) на метриките за всички модели.
-
-Покрива:
-- supervised baseline (ResNet-18 с класификационна глава);
-- single-agent SSL (ResNet-18 + projection head);
-- dual-agent model (два ResNet-18 енкодера).
-
-Метрики:
-- linear probe accuracy;
-- adjusted rand index (ARI) чрез KMeans върху frozen features.
-
-Допълнително:
-- автоматично записване на резултатите в CSV;
-- фиксиран train/val split чрез seed за сравними експерименти.
-"""
 
 from __future__ import annotations
 
@@ -78,6 +63,12 @@ def build_eval_loaders(cfg: Config):
 def extract_supervised_features(
     cfg: Config, ckpt_path: str
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Extract penultimate-layer features from a supervised ResNet-18 checkpoint.
+
+    Returns:
+        xtr, ytr, xva, yva: train/val features and labels.
+    """
     model = models.resnet18(weights=None)
     feat_dim = model.fc.in_features
     model.fc = nn.Linear(feat_dim, 100)
@@ -113,6 +104,9 @@ def extract_supervised_features(
 def extract_ssl_features(
     cfg: Config, ckpt_path: str
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Extract encoder features from a self-supervised ResNet18SSL checkpoint.
+    """
     model = ResNet18SSL(cfg.embedding_dim)
 
     state = torch.load(ckpt_path, map_location=cfg.device)
@@ -144,6 +138,15 @@ def extract_ssl_features(
 def extract_dual_features(
     cfg: Config, ckpt_path: str, agent: str = "mean"
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Extract features from a DualAgentModel checkpoint.
+
+    Args:
+        agent: "a", "b", or "mean" to choose which agent's features to use.
+
+    Returns:
+        xtr, ytr, xva, yva: train/val features and labels.
+    """
     model = DualAgentModel(cfg.embedding_dim)
 
     state = torch.load(ckpt_path, map_location=cfg.device)
@@ -188,6 +191,12 @@ def extract_dual_features(
 
 
 def compute_linear_probe_accuracy(x_train, y_train, x_val, y_val) -> float:
+    """
+    Train a frozen linear probe on top of features and report accuracy.
+
+    Standard SSL evaluation: train a logistic regression on train features,
+    then evaluate on validation labels.
+    """
     clf = LogisticRegression(max_iter=1000)
     clf.fit(x_train.numpy(), y_train.numpy())
     preds = clf.predict(x_val.numpy())
@@ -195,6 +204,11 @@ def compute_linear_probe_accuracy(x_train, y_train, x_val, y_val) -> float:
 
 
 def compute_ari(x_val, y_val, n_clusters: int = 100) -> float:
+    """
+    Compute Adjusted Rand Index between KMeans clusters and true labels.
+
+    Measures clustering quality of the learned feature space.
+    """
     km = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
     pred_clusters = km.fit_predict(x_val.numpy())
     return float(adjusted_rand_score(y_val.numpy(), pred_clusters))

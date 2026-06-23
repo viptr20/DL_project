@@ -1,10 +1,3 @@
-"""Модели (models) за проекта
-
-- ResNet-18 базов енкодер (baseline encoder)
-- ResNet-18 с проекционна глава (projection head) за контрастно самообучение
-- двуагентен модел (dual-agent model) с два ResNet-18 енкодера
-"""
-
 from typing import Tuple
 
 import torch
@@ -13,7 +6,7 @@ from torchvision import models
 
 
 class ResNet18Encoder(nn.Module):
-    """ResNet-18 енкодер без последния линеен слой"""
+    """ResNet-18 encoder that outputs feature vectors instead of logits."""
 
     def __init__(self):
         super().__init__()
@@ -24,11 +17,12 @@ class ResNet18Encoder(nn.Module):
         self.feat_dim = feat_dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Return pooled image features h."""
         return self.backbone(x)
 
 
 class ProjectionHead(nn.Module):
-    """Проекционна глава за контрастно самообучение"""
+    """2-layer MLP projection head used for contrastive learning."""
 
     def __init__(self, in_dim: int, hidden_dim: int = 256, out_dim: int = 128):
         super().__init__()
@@ -39,12 +33,19 @@ class ProjectionHead(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Map features h to normalized embeddings z."""
         z = self.net(x)
         return nn.functional.normalize(z, dim=-1)
 
 
 class ResNet18SSL(nn.Module):
-    """ResNet-18 с проекционна глава за SSL"""
+    """
+    Self-supervised ResNet-18 backbone.
+
+    Returns:
+        h: encoder features before the projection head
+        z: contrastive embeddings after the projection head
+    """
 
     def __init__(self, embedding_dim: int = 128):
         super().__init__()
@@ -58,7 +59,12 @@ class ResNet18SSL(nn.Module):
 
 
 class DualAgentModel(nn.Module):
-    """Двуагентен модел (dual-agent model) с два ResNet-18 енкодера"""
+    """
+    Two-agent SSL model.
+
+    Each agent is a ResNet18SSL; we process two views (xa, xb)
+    and return both feature and embedding pairs.
+    """
 
     def __init__(self, embedding_dim: int = 128):
         super().__init__()

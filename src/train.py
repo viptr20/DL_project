@@ -1,9 +1,3 @@
-"""Тренировъчни функции (training functions) за трите режима:
-- supervised baseline с ResNet-18;
-- самообучение (self-supervised) с ResNet-18 + контрастна загуба;
-- двуагентен модел с два ResNet-18 енкодера и прототипи.
-"""
-
 import os
 from typing import Tuple
 
@@ -54,7 +48,6 @@ def build_loaders(cfg: Config, n_views: int = 2) -> Tuple[DataLoader, DataLoader
 
 
 def train_supervised_baseline(cfg: Config):
-    """Обучение на supervised baseline (ResNet-18 + линеен класификатор)."""
     set_seed(cfg.seed)
     train_loader, _ = build_loaders(cfg, n_views=1)
 
@@ -84,7 +77,6 @@ def train_supervised_baseline(cfg: Config):
 
 
 def train_ssl_single_agent(cfg: Config):
-    """Самообучение с ResNet-18 + проекционна глава."""
     set_seed(cfg.seed)
     train_loader, _ = build_loaders(cfg, n_views=2)
 
@@ -114,7 +106,6 @@ def train_ssl_single_agent(cfg: Config):
 
 
 def train_dual_agent(cfg: Config):
-    """Обучение на двуагентен модел (dual-agent training)."""
     set_seed(cfg.seed)
     train_loader, _ = build_loaders(cfg, n_views=2)
 
@@ -127,21 +118,20 @@ def train_dual_agent(cfg: Config):
     for epoch in range(cfg.epochs_dual):
         model.train()
         for batch in train_loader:
-            views = batch["views"].to(cfg.device)  # [B, 2, C, H, W]
+            views = batch["views"].to(cfg.device)
             xa = views[:, 0]
             xb = views[:, 1]
 
             _, za, _, zb = model(xa, xb)
 
-            # контрастна загуба за агентите (contrastive loss)
             loss_ssl_a = contrastive_loss(za, zb, cfg.temperature)
-            loss_ssl_b = loss_ssl_a  # симетрично опростяване
+            # for now using the same SSL loss for both agents, can be changed later.
+            loss_ssl_b = loss_ssl_a
 
-            # загуба за съгласуваност между агентите
             loss_cons = cross_agent_consistency_loss(za, zb)
 
-            # прототипна компактност
             with torch.no_grad():
+                # average embeddings from both agents to get a shared prototype anchor
                 mean_z = (za + zb) / 2.0
                 dists = proto_memory.distances(mean_z)
                 proto_memory.update_or_create(mean_z, cfg.novelty_threshold)
@@ -167,4 +157,5 @@ def train_dual_agent(cfg: Config):
 
 if __name__ == "__main__":
     cfg = Config()
-    print("Тренировъчните функции са дефинирани. Стартирай желаната от main или от отделен скрипт.")
+    print("Available training modes: supervised, ssl, dual")
+    # later: parse sys.argv / argparse

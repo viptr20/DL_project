@@ -1,7 +1,6 @@
-"""Streamlit уеб апликация за интерактивно търсене с dual-agent модел.
+"""Streamlit web app for interactive search of similar images using dual-agent model.
 
-Потребителят качва изображение, а приложението показва
-най-близките изображения от COIL-100 чрез embedding-и от dual-agent модел.
+The user uploads an image, and the app displays the closest images from COIL-100 based on dual-agent model embeddings.
 """
 
 import io

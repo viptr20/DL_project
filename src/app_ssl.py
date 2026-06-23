@@ -1,7 +1,6 @@
-"""Streamlit уеб апликация за интерактивно търсене на най-близки изображения.
+"""Streamlit web app for interactive search of similar images using SSL.
 
-Потребителят качва изображение, а приложението показва
-най-близките по embedding изображения от COIL-100 чрез SSL модел.
+The user uploads an image, and the app displays the closest images from COIL-100 based on SSL embeddings.
 """
 
 import io
